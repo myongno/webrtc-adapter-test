@@ -179,6 +179,29 @@ function adapterFactory() {
       commonShim.shimSendThrowTypeError(window);
       commonShim.removeAllowExtmapMixed(window);
       break;
+    case 'RDK_WPE':
+      if (!safariShim || !options.shimSafari) {
+        logging('RDK_WPE shim is not included in this adapter release.');
+        return adapter;
+      }
+      logging('adapter.js shimming safari.');
+      // Export to the adapter global object visible in the browser.
+      adapter.browserShim = safariShim;
+
+      safariShim.shimRTCIceServerUrls(window);
+      safariShim.shimCreateOfferLegacy(window);
+      safariShim.shimCallbacksAPI(window);
+      safariShim.shimLocalStreamsAPI(window);
+      safariShim.shimRemoteStreamsAPI(window);
+      safariShim.shimTrackEventTransceiver(window);
+      safariShim.shimGetUserMedia(window);
+      safariShim.shimAudioContext(window);
+
+      commonShim.shimRTCIceCandidate(window);
+      commonShim.shimMaxMessageSize(window);
+      commonShim.shimSendThrowTypeError(window);
+      commonShim.removeAllowExtmapMixed(window);
+      break;
     default:
       logging('Unsupported browser!');
       break;
@@ -2847,8 +2870,13 @@ function detectBrowser(window) {
     result.browser = 'edge';
     result.version = extractVersion(navigator.userAgent, /Edge\/(\d+).(\d+)$/, 2);
   } else if (window.RTCPeerConnection && navigator.userAgent.match(/AppleWebKit\/(\d+)\./)) {
-    // Safari.
-    result.browser = 'safari';
+    if (navigator.userAgent.match(/WPE/)) {
+      // RDK_WPE
+      result.browser = 'RDK_WPE';
+    } else {
+      // Safari.
+      result.browser = 'safari';
+    }
     result.version = extractVersion(navigator.userAgent, /AppleWebKit\/(\d+)\./, 1);
     result.supportsUnifiedPlan = window.RTCRtpTransceiver && 'currentDirection' in window.RTCRtpTransceiver.prototype;
   } else {
