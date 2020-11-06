@@ -43,6 +43,10 @@ var _safari_shim = require('./safari/safari_shim');
 
 var safariShim = _interopRequireWildcard(_safari_shim);
 
+var _rdkWpe_shim = require('./rdkWpe/rdkWpe_shim');
+
+var rdkWpeShim = _interopRequireWildcard(_rdkWpe_shim);
+
 var _common_shim = require('./common_shim');
 
 var commonShim = _interopRequireWildcard(_common_shim);
@@ -50,13 +54,9 @@ var commonShim = _interopRequireWildcard(_common_shim);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 // Shimming starts here.
-/*
- *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
+
+
+// Browser shims.
 function adapterFactory() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       window = _ref.window;
@@ -65,7 +65,8 @@ function adapterFactory() {
     shimChrome: true,
     shimFirefox: true,
     shimEdge: true,
-    shimSafari: true
+    shimSafari: true,
+    shimRdkWpe: true
   };
 
   // Utils.
@@ -180,22 +181,22 @@ function adapterFactory() {
       commonShim.removeAllowExtmapMixed(window);
       break;
     case 'RDK_WPE':
-      if (!safariShim || !options.shimSafari) {
+      if (!rdkWpeShim || !options.shimRdkWpe) {
         logging('RDK_WPE shim is not included in this adapter release.');
         return adapter;
       }
-      logging('adapter.js shimming safari.');
+      logging('adapter.js shimming RDK_WPE.');
       // Export to the adapter global object visible in the browser.
-      adapter.browserShim = safariShim;
+      adapter.browserShim = rdkWpeShim;
 
-      safariShim.shimRTCIceServerUrls(window);
-      safariShim.shimCreateOfferLegacy(window);
-      safariShim.shimCallbacksAPI(window);
-      safariShim.shimLocalStreamsAPI(window);
-      safariShim.shimRemoteStreamsAPI(window);
-      safariShim.shimTrackEventTransceiver(window);
-      safariShim.shimGetUserMedia(window);
-      safariShim.shimAudioContext(window);
+      rdkWpeShim.shimRTCIceServerUrls(window);
+      rdkWpeShim.shimCreateOfferLegacy(window);
+      rdkWpeShim.shimCallbacksAPI(window);
+      rdkWpeShim.shimLocalStreamsAPI(window);
+      rdkWpeShim.shimRemoteStreamsAPI(window);
+      rdkWpeShim.shimTrackEventTransceiver(window);
+      rdkWpeShim.shimGetUserMedia(window);
+      rdkWpeShim.shimAudioContext(window);
 
       commonShim.shimRTCIceCandidate(window);
       commonShim.shimMaxMessageSize(window);
@@ -208,11 +209,15 @@ function adapterFactory() {
   }
 
   return adapter;
-}
+} /*
+   *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
+   *
+   *  Use of this source code is governed by a BSD-style license
+   *  that can be found in the LICENSE file in the root of the source
+   *  tree.
+   */
 
-// Browser shims.
-
-},{"./chrome/chrome_shim":3,"./common_shim":6,"./edge/edge_shim":7,"./firefox/firefox_shim":11,"./safari/safari_shim":14,"./utils":15}],3:[function(require,module,exports){
+},{"./chrome/chrome_shim":3,"./common_shim":6,"./edge/edge_shim":7,"./firefox/firefox_shim":11,"./rdkWpe/rdkWpe_shim":14,"./safari/safari_shim":15,"./utils":16}],3:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -984,7 +989,7 @@ function fixNegotiationNeeded(window) {
   });
 }
 
-},{"../utils.js":15,"./getdisplaymedia":4,"./getusermedia":5}],4:[function(require,module,exports){
+},{"../utils.js":16,"./getdisplaymedia":4,"./getusermedia":5}],4:[function(require,module,exports){
 /*
  *  Copyright (c) 2018 The adapter.js project authors. All Rights Reserved.
  *
@@ -1242,7 +1247,7 @@ function shimGetUserMedia(window) {
   }
 }
 
-},{"../utils.js":15}],6:[function(require,module,exports){
+},{"../utils.js":16}],6:[function(require,module,exports){
 /*
  *  Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
  *
@@ -1591,7 +1596,7 @@ function removeAllowExtmapMixed(window) {
   };
 }
 
-},{"./utils":15,"sdp":17}],7:[function(require,module,exports){
+},{"./utils":16,"sdp":18}],7:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -1711,7 +1716,7 @@ function shimReplaceTrack(window) {
   }
 }
 
-},{"../utils":15,"./filtericeservers":8,"./getdisplaymedia":9,"./getusermedia":10,"rtcpeerconnection-shim":16}],8:[function(require,module,exports){
+},{"../utils":16,"./filtericeservers":8,"./getdisplaymedia":9,"./getusermedia":10,"rtcpeerconnection-shim":17}],8:[function(require,module,exports){
 /*
  *  Copyright (c) 2018 The WebRTC project authors. All Rights Reserved.
  *
@@ -1772,7 +1777,7 @@ function filterIceServers(iceServers, edgeVersion) {
   });
 }
 
-},{"../utils":15}],9:[function(require,module,exports){
+},{"../utils":16}],9:[function(require,module,exports){
 /*
  *  Copyright (c) 2018 The adapter.js project authors. All Rights Reserved.
  *
@@ -2193,7 +2198,7 @@ function shimCreateAnswer(window) {
   };
 }
 
-},{"../utils":15,"./getdisplaymedia":12,"./getusermedia":13}],12:[function(require,module,exports){
+},{"../utils":16,"./getdisplaymedia":12,"./getusermedia":13}],12:[function(require,module,exports){
 /*
  *  Copyright (c) 2018 The adapter.js project authors. All Rights Reserved.
  *
@@ -2310,7 +2315,7 @@ function shimGetUserMedia(window) {
   }
 }
 
-},{"../utils":15}],14:[function(require,module,exports){
+},{"../utils":16}],14:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -2679,7 +2684,9 @@ function shimAudioContext(window) {
   window.AudioContext = window.webkitAudioContext;
 }
 
-},{"../utils":15}],15:[function(require,module,exports){
+},{"../utils":16}],15:[function(require,module,exports){
+arguments[4][14][0].apply(exports,arguments)
+},{"../utils":16,"dup":14}],16:[function(require,module,exports){
 /*
  *  Copyright (c) 2016 The WebRTC project authors. All Rights Reserved.
  *
@@ -2959,7 +2966,7 @@ function filterStats(result, track, outbound) {
   return filteredResult;
 }
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /*
  *  Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
  *
@@ -4818,7 +4825,7 @@ module.exports = function(window, edgeVersion) {
   return RTCPeerConnection;
 };
 
-},{"sdp":17}],17:[function(require,module,exports){
+},{"sdp":18}],18:[function(require,module,exports){
 /* eslint-env node */
 'use strict';
 
