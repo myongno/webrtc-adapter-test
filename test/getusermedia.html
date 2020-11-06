@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Get USer Media - Simple Example</title>
+    </head>
+
+    <body style="background-color: white;"  topmargin="30" leftmargin="20" marginheight="30" marginwidth="20">
+        <video autoplay></video>
+        <script>
+            const constraints = {
+                video: true
+            };
+
+            const video = document.querySelector('video');
+
+            navigator.mediaDevices.getUserMedia(constraints).
+                then((stream) => {video.srcObject = stream});
+        </script>        
+    </body>
+</html>
